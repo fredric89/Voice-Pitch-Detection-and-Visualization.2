@@ -1,1 +1,7 @@
-
+streamlit
+numpy 
+librosa
+matplotlib
+io
+scipy.signal 
+butter, lfilter
