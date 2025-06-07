@@ -29,14 +29,20 @@ def detect_pitch_autocorr(y, sr, frame_length=2048, hop_length=512):
         corr = corr[len(corr)//2:]
 
         d = np.diff(corr)
-        start = np.where(d > 0)[0][0]  # Start of the first positive slope
+        pos_slope = np.where(d > 0)[0]
+        if len(pos_slope) == 0:
+            pitches.append(0)  # No detectable pitch
+            times.append(i / sr)
+            continue
 
+        start = pos_slope[0]
         peak = np.argmax(corr[start:]) + start
         pitch = sr / peak if peak != 0 else 0
-        pitches.append(pitch if pitch < 500 else 0)  # Limit max pitch
+        pitches.append(pitch if pitch < 500 else 0)
         times.append(i / sr)
 
     return np.array(times), np.array(pitches)
+
 
 # --- Streamlit App ---
 st.set_page_config(page_title="Voice Pitch Detection and Visualization")
