@@ -55,8 +55,11 @@ if uploaded_file is not None:
     y, sr = librosa.load(uploaded_file, sr=None, mono=True)
 
     # Preprocessing
+    # Preprocessing
     y = bandpass_filter(y, lowcut=80, highcut=300, fs=sr)
     y = librosa.effects.preemphasis(y)
+    y = np.nan_to_num(y, nan=0.0, posinf=0.0, neginf=0.0)  # Clean invalid values
+
 
     # Pitch detection
     times, pitches = detect_pitch_autocorr(y, sr)
